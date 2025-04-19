@@ -1,35 +1,42 @@
-function popupEscClose(e) {
-  const popup = document.querySelector(".popup_is-opened");
+const popupIsOpen = "popup_is-opened";
+
+// Закрытие модального окна нажатием на Esc
+function closePopupEsc(e) {
+  const popup = document.querySelector(`.${popupIsOpen}`);
   if (e.key === "Escape") {
     closePopup(popup);
   }
   return;
 }
 
-function popupOverlayClose(e) {
+// Закрытие модального окна кликом на оверлей
+function closePopupOverlay(e) {
   if (e.target === e.currentTarget) {
     closePopup(e.currentTarget);
   }
   return;
 }
 
-function handleCloseButton(popup) {
+// Устанавливаем слушатель на кнопку крестик
+function setCloseButton(popup) {
   const closeButton = popup.querySelector(".popup__close");
   closeButton.addEventListener("click", () => {
     closePopup(popup);
   });
 }
 
+// Открытие модального окна
 function openPopup(popup) {
-  popup.classList.add("popup_is-opened");
-  document.addEventListener("keydown", popupEscClose);
-  popup.addEventListener("click", popupOverlayClose);
-  handleCloseButton(popup);
+  popup.classList.add(popupIsOpen);
+  document.addEventListener("keydown", closePopupEsc);
+  popup.addEventListener("click", closePopupOverlay);
+  setCloseButton(popup);
 }
 
+// Закрытие модального окна
 function closePopup(popup) {
-  popup.classList.remove("popup_is-opened");
-  document.removeEventListener("keydown", popupEscClose);
+  popup.classList.remove(popupIsOpen);
+  document.removeEventListener("keydown", closePopupEsc);
 }
 
 export { openPopup, closePopup };

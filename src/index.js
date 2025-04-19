@@ -1,64 +1,98 @@
 import "./pages/index.css";
 import { initialCards } from "./components/cards";
-import{openPopup, closePopup} from "./components/modal"
-
-// @todo: Темплейт карточки
-const cardTemplate = document.querySelector("#card-template").content;
+import { openPopup, closePopup } from "./components/modal";
+import { createCard, deleteCard, toggleLike } from "./components/card";
 
 // @todo: DOM узлы
 const cardsContainer = document.querySelector(".places__list");
+const popups = document.querySelectorAll(".popup");
+const profileName = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
+// Элементы модального окна для редактирования профиля
 const editProfilePopup = document.querySelector(".popup_type_edit");
+const editProfileForm = editProfilePopup.querySelector(".popup__form");
+const profileNameInput = editProfilePopup.querySelector(".popup__input_type_name");
+const profileDescriptionInput = editProfilePopup.querySelector(".popup__input_type_description");
+// Элементы модального окна для добавления новой карточки
 const addCardPopup = document.querySelector(".popup_type_new-card");
-
-// @todo: Кнопки
+const addCardForm = addCardPopup.querySelector(".popup__form");
+const cardNameInput = addCardPopup.querySelector(".popup__input_type_card-name");
+const cardLinkInput = addCardPopup.querySelector(".popup__input_type_url");
+// Элементы модального окна для просмотра изображения
+const viewCardPopup = document.querySelector(".popup_type_image");
+const viewCardImage = viewCardPopup.querySelector(".popup__image");
+const viewCardCaption = viewCardPopup.querySelector(".popup__caption");
+// Кнопки
 const editButton = document.querySelector(".profile__edit-button");
 const addButton = document.querySelector(".profile__add-button");
 
-// @todo: Функция создания карточки
-function createCard(card, handleDeleteCard, handleLikeCard) {
-  const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
-  const imageElement = cardElement.querySelector(".card__image");
-  const titleElement = cardElement.querySelector(".card__title");
-  const deleteButton = cardElement.querySelector(".card__delete-button");
-  const likeButton = cardElement.querySelector(".card__like-button");
+// Добавить класс анимации на модальные окна
+popups.forEach((popup) => popup.classList.add("popup_is-animated"));
 
-  imageElement.src = card.link;
-  imageElement.alt = card.name;
-  titleElement.textContent = card.name;
-
-  deleteButton.addEventListener("click", handleDeleteCard);
-  likeButton.addEventListener("click", handleLikeCard);
-  return cardElement;
+// Заполнить поля формы информацией из профиля
+function fillPopupInputs() {
+  profileNameInput.value = profileName.textContent;
+  profileDescriptionInput.value = profileDescription.textContent;
 }
 
-// @todo: Функция удаления карточки
-function deleteCard(e) {
-  const listItem = e.target.closest(".card");
-  listItem.remove();
+// Отрисовать карточку
+function renderCard(card) {
+  return createCard(card, deleteCard, toggleLike, openImagePopup);
 }
 
-// @todo: Функция постановки лайка карточке
-function likeCard(e) {
-  const likeElement = e.target;
-  likeElement.classList.toggle("card__like-button_is-active");
-}
-
-// @todo: Вывести карточки на страницу
-function renderCards(itemList) {
+// @todo: Вывести все карточки на страницу
+function renderInitialCards(itemList) {
   itemList.forEach((card) => {
-    const cardElement = createCard(card, deleteCard, likeCard);
-    cardsContainer.append(cardElement);
+    cardsContainer.append(renderCard(card));
   });
 }
 
+renderInitialCards(initialCards);
+
+// Добавить новую карточку на страницу
+function addNewCard() {
+  const name = cardNameInput.value;
+  const link = cardLinkInput.value;
+  cardsContainer.prepend(renderCard({ name, link }));
+}
+
+// Редактировать профиль
+function updateProfile() {
+  profileName.textContent = profileNameInput.value;
+  profileDescription.textContent = profileDescriptionInput.value;
+}
+
+// Обработчики «отправки» форм
+function handleProfileFormSubmit(e) {
+  e.preventDefault();
+  updateProfile();
+  closePopup(editProfilePopup);
+  editProfileForm.reset();
+}
+
+function handleCardFormSubmit(e) {
+  e.preventDefault();
+  addNewCard();
+  closePopup(addCardPopup);
+  addCardForm.reset();
+}
+
+// Открыть изображение для просмотра
+function openImagePopup(card) {
+  const { name, link } = card;
+  viewCardImage.src = link;
+  viewCardCaption.alt = name;
+  viewCardCaption.textContent = name;
+  openPopup(viewCardPopup);
+}
 
 editButton.addEventListener("click", () => {
   openPopup(editProfilePopup);
+  fillPopupInputs();
 });
-
 addButton.addEventListener("click", () => {
   openPopup(addCardPopup);
 });
 
-
-renderCards(initialCards);
+addCardForm.addEventListener("submit", handleCardFormSubmit);
+editProfileForm.addEventListener("submit", handleProfileFormSubmit);
