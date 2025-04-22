@@ -2,8 +2,9 @@ const popupIsOpen = "popup_is-opened";
 
 // Закрытие модального окна нажатием на Esc
 function closePopupEsc(e) {
-  const popup = document.querySelector(`.${popupIsOpen}`);
+  // const popup = document.querySelector(`.${popupIsOpen}`);
   if (e.key === "Escape") {
+    const popup = document.querySelector(`.${popupIsOpen}`);
     closePopup(popup);
   }
   return;
