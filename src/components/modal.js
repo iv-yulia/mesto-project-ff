@@ -1,5 +1,4 @@
 const popupIsOpen = "popup_is-opened";
-const popups = document.querySelectorAll(".popup");
 
 // Закрытие модального окна нажатием на Esc
 const closePopupEsc = (e) => {
@@ -36,6 +35,4 @@ const setPopupEventListeners = (popup) => {
   });
 };
 
-popups.forEach((popup) => setPopupEventListeners(popup));
-
-export { openPopup, closePopup };
+export { openPopup, closePopup, setPopupEventListeners };

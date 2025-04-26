@@ -4,6 +4,7 @@ import { openPopup, closePopup } from "./components/modal";
 import { createCard, deleteCard, toggleLike } from "./components/card";
 
 // @todo: DOM узлы
+const popups = document.querySelectorAll(".popup");
 const cardsContainer = document.querySelector(".places__list");
 const profileName = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
@@ -30,6 +31,8 @@ const viewCardCaption = viewCardPopup.querySelector(".popup__caption");
 // Кнопки
 const editButton = document.querySelector(".profile__edit-button");
 const addButton = document.querySelector(".profile__add-button");
+
+popups.forEach((popup) => setPopupEventListeners(popup));
 
 // Заполнить поля формы информацией из профиля
 const fillPopupInputs = () => {
