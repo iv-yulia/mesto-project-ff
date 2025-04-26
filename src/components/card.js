@@ -2,7 +2,7 @@
 const cardTemplate = document.querySelector("#card-template").content;
 
 // @todo: Функция создания карточки
-function createCard(card, handleDeleteCard, handleLikeCard, handleOpenCard) {
+const createCard = (card, handleDeleteCard, handleLikeCard, handleOpenCard) => {
   const { name, link } = card;
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   const imageElement = cardElement.querySelector(".card__image");
@@ -22,13 +22,13 @@ function createCard(card, handleDeleteCard, handleLikeCard, handleOpenCard) {
 }
 
 // @todo: Функция удаления карточки
-function deleteCard(e) {
+const deleteCard = (e) => {
   const listItem = e.target.closest(".card");
   listItem.remove();
 }
 
 // @todo: Функция постановки лайка карточке
-function toggleLike(e) {
+const toggleLike = (e) => {
   const likeElement = e.target;
   likeElement.classList.toggle("card__like-button_is-active");
 }

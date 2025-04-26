@@ -1,43 +1,41 @@
 const popupIsOpen = "popup_is-opened";
+const popups = document.querySelectorAll(".popup");
 
 // Закрытие модального окна нажатием на Esc
-function closePopupEsc(e) {
-  // const popup = document.querySelector(`.${popupIsOpen}`);
+const closePopupEsc = (e) => {
   if (e.key === "Escape") {
     const popup = document.querySelector(`.${popupIsOpen}`);
     closePopup(popup);
   }
   return;
-}
-
-// Закрытие модального окна кликом на оверлей
-function closePopupOverlay(e) {
-  if (e.target === e.currentTarget) {
-    closePopup(e.currentTarget);
-  }
-  return;
-}
-
-// Устанавливаем слушатель на кнопку крестик
-function setCloseButton(popup) {
-  const closeButton = popup.querySelector(".popup__close");
-  closeButton.addEventListener("click", () => {
-    closePopup(popup);
-  });
-}
+};
 
 // Открытие модального окна
-function openPopup(popup) {
+const openPopup = (popup) => {
   popup.classList.add(popupIsOpen);
   document.addEventListener("keydown", closePopupEsc);
-  popup.addEventListener("click", closePopupOverlay);
-  setCloseButton(popup);
-}
+};
 
 // Закрытие модального окна
-function closePopup(popup) {
+const closePopup = (popup) => {
   popup.classList.remove(popupIsOpen);
   document.removeEventListener("keydown", closePopupEsc);
-}
+};
+
+// Логика обработки событий модального окна
+const setPopupEventListeners = (popup) => {
+// Добавить класс анимации на модальные окна
+  popup.classList.add("popup_is-animated");
+  popup.addEventListener("click", (e) => {
+    if (
+      e.target.classList.contains("popup__close") ||
+      e.target === e.currentTarget
+    ) {
+      closePopup(popup);
+    }
+  });
+};
+
+popups.forEach((popup) => setPopupEventListeners(popup));
 
 export { openPopup, closePopup };
