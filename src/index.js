@@ -1,6 +1,6 @@
 import "./pages/index.css";
 import { initialCards } from "./components/cards";
-import { openPopup, closePopup } from "./components/modal";
+import { openPopup, closePopup, setPopupEventListeners } from "./components/modal";
 import { createCard, deleteCard, toggleLike } from "./components/card";
 
 // @todo: DOM узлы
