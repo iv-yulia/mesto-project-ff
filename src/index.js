@@ -4,7 +4,7 @@ import {
   closePopup,
   setPopupEventListeners,
 } from "./components/modal";
-import { createCard, toggleLike } from "./components/card";
+import { createCard, toggleLike, deleteCard } from "./components/card";
 import { clearValidation, enableValidation } from "./components/validation";
 import {
   getInitialCards,
@@ -14,6 +14,7 @@ import {
   updateProfileAvatar,
   removeCard,
 } from "./components/api";
+import { isLoading } from "./components/utils";
 
 // @todo: DOM узлы
 const popups = document.querySelectorAll(".popup");
@@ -70,12 +71,6 @@ let cardForDelete = null;
 
 popups.forEach((popup) => setPopupEventListeners(popup));
 
-const isLoading = (loading, button) => {
-  loading
-    ? (button.textContent = "Сохранение...")
-    : (button.textContent = "Сохранение");
-};
-
 Promise.all([getInitialCards(), getProfileInfo()])
   .then((res) => {
     const [cards, userInfo] = res;
@@ -98,21 +93,16 @@ const fillPopupInputs = () => {
   profileDescriptionInput.value = profileDescription.textContent;
 };
 
-// Добавить новую карточку на страницу
-const addNewCard = () => {
-  const name = cardNameInput.value;
-  const link = cardLinkInput.value;
-  isLoading(true, saveCardButton);
-  uploadNewCard(name, link)
-    .then((card) => {
-      cardsContainer.prepend(renderCard(card));
-    })
-    .catch((err) => console.log(err))
-    .finally(() => isLoading(false, saveCardButton));
+// Открытие попапа удаления карточки
+const openConfirmationPopup = (id, card) => {
+  openPopup(confirmationPopup);
+  idCardForDelete = id;
+  cardForDelete = card;
 };
 
 // Редактировать профиль
-const updateProfile = () => {
+const handleProfileFormSubmit = (e) => {
+  e.preventDefault();
   const name = profileNameInput.value;
   const about = profileDescriptionInput.value;
   isLoading(true, saveProfileInfoButton);
@@ -121,61 +111,52 @@ const updateProfile = () => {
       const { name, about } = user;
       profileName.textContent = name;
       profileDescription.textContent = about;
+      closePopup(editProfilePopup);
     })
     .catch((err) => console.log(err))
     .finally(() => isLoading(false, saveProfileInfoButton));
 };
 
+// Добавить новую карточку на страницу
+const handleCardFormSubmit = (e) => {
+  e.preventDefault();
+  const name = cardNameInput.value;
+  const link = cardLinkInput.value;
+  isLoading(true, saveCardButton);
+  uploadNewCard(name, link)
+    .then((card) => {
+      cardsContainer.prepend(renderCard(card));
+      closePopup(addCardPopup);
+      clearValidation(addCardForm, config);
+    })
+    .catch((err) => console.log(err))
+    .finally(() => isLoading(false, saveCardButton));
+};
+
 // Редактировать аватар
-const updateAvatar = () => {
+const handleAvatarFormSubmit = (e) => {
+  e.preventDefault();
   const avatar = avatarInput.value;
   isLoading(true, saveAvatarButton);
   updateProfileAvatar(avatar)
     .then((user) => {
       const { avatar } = user;
       editAvatar.style.backgroundImage = `url(${avatar})`;
+      closePopup(editAvatarPopup);
     })
     .catch((err) => console.log(err))
     .finally(() => isLoading(false, saveAvatarButton));
 };
 
 // Удаление карточки
-const deleteCard = () => {
-  removeCard(idCardForDelete)
-    .then(() => cardForDelete.remove())
-    .catch((err) => console.log(err));
-};
-
-// Открытие попапа удаления карточки
-const openConfirmationPopup = (id, card) => {
-  openPopup(confirmationPopup);
-  idCardForDelete = id;
-  cardForDelete = card;
-};
-
-// Обработчики «отправки» форм
-const handleProfileFormSubmit = (e) => {
-  e.preventDefault();
-  updateProfile();
-  closePopup(editProfilePopup);
-};
-
-const handleCardFormSubmit = (e) => {
-  e.preventDefault();
-  addNewCard();
-  closePopup(addCardPopup);
-};
-
-const handleAvatarFormSubmit = (e) => {
-  e.preventDefault();
-  updateAvatar();
-  closePopup(editAvatarPopup);
-};
-
 const handleDeleteCard = (e) => {
   e.preventDefault();
-  deleteCard();
-  closePopup(confirmationPopup);
+  removeCard(idCardForDelete)
+    .then(() => {
+      deleteCard(cardForDelete);
+      closePopup(confirmationPopup);
+    })
+    .catch((err) => console.log(err));
 };
 
 // Открыть изображение для просмотра
@@ -211,7 +192,6 @@ editButton.addEventListener("click", () => {
   fillPopupInputs();
 });
 addButton.addEventListener("click", () => {
-  clearValidation(addCardForm, config);
   openPopup(addCardPopup);
 });
 

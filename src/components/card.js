@@ -46,14 +46,20 @@ const createCard = (
   return cardElement;
 };
 
+// Удаление карточки из разметки
+const deleteCard = (card) => {
+  card.remove()
+}
+
 // @todo: Функция постановки лайка карточке
 const toggleLike = (id, likes, button) => {
   const isLiked = button.classList.contains("card__like-button_is-active")
   likeCard(id, isLiked).then((card) => {
     likes.textContent = card.likes.length;
     button.classList.toggle("card__like-button_is-active");
-  });
+  })
+  .catch(err => console.log(err))
 };
 
 
-export { createCard, toggleLike };
+export { createCard, toggleLike, deleteCard };
