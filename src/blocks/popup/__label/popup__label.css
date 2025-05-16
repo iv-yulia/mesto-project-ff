@@ -2,3 +2,9 @@
   position: relative;
   display: flex;
 }
+
+@media screen and (max-width: 400px) {
+  .popup__label {
+    margin-bottom: 15px;
+  }
+}

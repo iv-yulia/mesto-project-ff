@@ -22,10 +22,3 @@
 .popup__input:focus-visible {
   border-bottom: 1px solid rgba(0, 0, 0);
 }
-
-@media screen and (max-width: 568px) {
-  .popup__title {
-    font-size: 12px;
-    line-height: 15px;
-  }
-}

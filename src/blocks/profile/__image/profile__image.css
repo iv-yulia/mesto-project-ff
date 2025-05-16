@@ -11,14 +11,20 @@
   position: relative;
 }
 
-.profile__image:hover::before {
+.profile__image::before {
   content: "";
   background-image: url("../../../images/edit-icon.svg");
   background-position: center;
   background-repeat: no-repeat;
   position: absolute;
   inset: 0;
+  opacity: 0;
   background-color: rgba(0, 0, 0, .8);
+}
+
+.profile__image:hover::before {
+  opacity: 1;
+  transition: opacity .3s;
 }
 
 @media screen and (max-width: 740px) {

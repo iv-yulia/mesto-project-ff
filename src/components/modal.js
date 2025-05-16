@@ -1,4 +1,5 @@
 const popupIsOpen = "popup_is-opened";
+import { showSubmitError } from "../utils/helpers";
 
 // Закрытие модального окна нажатием на Esc
 const closePopupEsc = (e) => {
@@ -13,6 +14,7 @@ const closePopupEsc = (e) => {
 const openPopup = (popup) => {
   popup.classList.add(popupIsOpen);
   document.addEventListener("keydown", closePopupEsc);
+  showSubmitError(false, popup);
 };
 
 // Закрытие модального окна
@@ -23,7 +25,7 @@ const closePopup = (popup) => {
 
 // Логика обработки событий модального окна
 const setPopupEventListeners = (popup) => {
-// Добавить класс анимации на модальные окна
+  // Добавить класс анимации на модальные окна
   popup.classList.add("popup_is-animated");
   popup.addEventListener("click", (e) => {
     if (

@@ -63,7 +63,7 @@ export const uploadNewCard = (name, link) => {
       link,
     })
   })
-  .then(checkResponseStatus);
+  .then(checkResponseStatus)
 }
 
 export const removeCard = (cardId) => {
